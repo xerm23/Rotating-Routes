@@ -11,8 +11,10 @@ namespace RotatingRoutes.Hex
         public void RotateHex(Transform hex)
         {
             HexTile hexTile = hex.GetComponent<HexTile>();
+            Debug.Log("HEX TILE11: " + hex);
             if (hexTile == null || !hexTile.UsableStatus)
                 return;
+            Debug.Log("HEX TILE22: " + hex);
             hex.DOKill();
             hex.DOPunchScale(Vector3.one * .2f, .1f).OnComplete(() => hex.DOScale(1, .1f));
             hex.DOMoveY(1, .1f).OnComplete(() => hex.DOMoveY(0, .1f).SetDelay(.1f));

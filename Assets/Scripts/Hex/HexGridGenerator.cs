@@ -7,6 +7,9 @@ namespace RotatingRoutes.Hex
 
     public class HexGridGenerator : MonoBehaviour
     {
+        [SerializeField] HexTile hexTilePrefab;
+
+
         [SerializeField] int rowAmount;
         [SerializeField] int colAmount;
         [SerializeField] GameObject[] walkableTiles;
@@ -18,6 +21,8 @@ namespace RotatingRoutes.Hex
 
         void Start()
         {
+            HexTile.Pool.SetOriginal(hexTilePrefab);
+            HexTile.Pool.SetParent(transform);
             Generate();
         }
 
@@ -30,9 +35,14 @@ namespace RotatingRoutes.Hex
 
             for (int i = 0; i < rowAmount; i++)
                 for (int j = 0; j < colAmount; j++)
-                    Instantiate(walkableTiles[Random.Range(0, walkableTiles.Length)], new Vector3(i % 2 != 0 ? X_OFFSET * j + X_OFFSET / 2 : X_OFFSET * j, 0, Z_OFFSET * i), Quaternion.identity, transform).transform.Rotate(0, Random.Range(0, 6) * 60, 0);
+                {
+                    HexTile tile = HexTile.Pool.Get();
+                    tile.SetHexTileType((HexTileType)Random.Range(0, 3));
+                    tile.gameObject.name = $"Tile {i}-{j}";
+                    tile.transform.SetPositionAndRotation(new Vector3(i % 2 != 0 ? X_OFFSET * j + X_OFFSET / 2 : X_OFFSET * j, 0, Z_OFFSET * i), Quaternion.Euler(0, Random.Range(0, 6) * 60, 0));
+                }
 
-            SpawnSideHills();
+            //SpawnSideHills();
         }
 
 
