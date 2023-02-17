@@ -26,11 +26,7 @@ namespace RotatingRoutes.Hex
 
         private void GetHit()
         {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z = 15f;
-            mousePos = _mainCam.ScreenToWorldPoint(mousePos);
             Ray ray = _mainCam.ScreenPointToRay(Input.mousePosition);
-            Debug.DrawRay(ray.origin, ray.direction, Color.red);
             if (!Physics.Raycast(ray, out RaycastHit hitinfo, 150, _hexLayerMask, QueryTriggerInteraction.Ignore))
                 return;
             _hexRotator.RotateHex(hitinfo.transform);

@@ -1,3 +1,4 @@
+using RotatingRoutes.Hex;
 using RotatingRoutes.Util.Extensions;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,11 @@ namespace RotatingRoutes.Pathfinding
                                                       .Select(x => x.position)
                                                       .ReverseIf(!_first)
                                                       .ToList();
+        private HexTile HexTile => _hexTile ??= GetComponentInParent<HexTile>();
+        private HexTile _hexTile;
+
+
+        public void SetParentHexTileStatus(bool status) => HexTile.SetUsableStatus(status);
 
     }
 

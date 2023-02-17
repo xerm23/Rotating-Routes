@@ -6,21 +6,25 @@ namespace RotatingRoutes.Hex
 {
     public class HexRotator : MonoBehaviour
     {
-        private readonly Dictionary<Transform, Tween> _rotatingTweens = new();
+        private readonly Dictionary<Transform, float> _rotatingTweens = new();
 
         public void RotateHex(Transform hex)
         {
-            if (_rotatingTweens.TryGetValue(hex, out Tween rotatingTween))
-            {
-                rotatingTween.Complete();
-            }
-
+            HexTile hexTile = hex.GetComponent<HexTile>();
+            if (hexTile == null || !hexTile.UsableStatus)
+                return;
             hex.DOKill();
+            hex.DOPunchScale(Vector3.one * .2f, .1f).OnComplete(() => hex.DOScale(1, .1f));
+            hex.DOMoveY(1, .1f).OnComplete(() => hex.DOMoveY(0, .1f).SetDelay(.1f));
 
-            hex.DOPunchScale(Vector3.one * .1f, .1f).OnComplete(() => hex.DOScale(1, .1f));
-            hex.DOMoveY(1, .15f).OnComplete(() => hex.DOMoveY(0, .1f).SetDelay(.1f));
-            Tween rotateTween = hex.DORotate(hex.rotation.eulerAngles + new Vector3(0, 60, 0), .1f).SetDelay(.15f).OnComplete(() => _rotatingTweens.Remove(hex));
-            _rotatingTweens.Add(hex, rotateTween);
+            _rotatingTweens.TryGetValue(hex, out float rotateGoal);
+            _rotatingTweens[hex] = Mathf.Approximately(rotateGoal, 0) ? hex.transform.eulerAngles.y + 60 : rotateGoal + 60;
+            hex.DORotate(new Vector3(0, _rotatingTweens[hex], 0), .05f)
+               .SetDelay(.1f)
+               .OnComplete(() => _rotatingTweens.Remove(hex));
+
+
+            //_rotatingTweens.Add(hex, hex.rotation.eulerAngles.y + 60);
         }
 
     }
