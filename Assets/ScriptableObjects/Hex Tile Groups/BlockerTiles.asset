@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: BlockerTiles
   m_EditorClassIdentifier: 
   TileType: 3
-  Prefabs: []
+  Prefabs:
+  - {fileID: 8630557302137870435, guid: edfa2f2d0a895454c8375a2d7dac5f13, type: 3}
+  - {fileID: 239007818425323367, guid: 237d12f441fd0c54f9a0429b51e1835a, type: 3}
+  - {fileID: 4777263909012436286, guid: 2860dea7ce981df48aacf6170492d746, type: 3}

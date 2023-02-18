@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: WalkableNarrowCurveTiles
   m_EditorClassIdentifier: 
   TileType: 1
-  Prefabs: []
+  Prefabs:
+  - {fileID: 1268870776210341595, guid: c68a5f8a076a1bb438a38504fd30d29c, type: 3}

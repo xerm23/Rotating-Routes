@@ -43,7 +43,7 @@ namespace RotatingRoutes.Hex
             if (HexTileType > HexTileType.WalkableWideCurve)
                 return;
             LineRenderer linePath = GetComponentInChildren<LineRenderer>(true);
-            Transform wayPointsContainer = transform.Find("WaypointsContainer");
+            Transform wayPointsContainer = transform.GetChild(0).Find("WaypointsContainer");
             GenerateWaypointsReference(linePath, wayPointsContainer);
         }
         private void GenerateWaypointsReference(LineRenderer linePath, Transform container)
