@@ -72,7 +72,7 @@ namespace RotatingRoutes.Hex
         {
             SpawnedHexTiles[(RowAmount, ColAmount / 2)] = new(HexTileType.WalkableStraight, 120);
             SpawnedHexTiles[(RowAmount, 1 + ColAmount / 2)] = new(HexTileType.WalkableStraight, -120);
-            SpawnedHexTiles[(RowAmount + 1, (RowAmount & 1) == 0 ? ColAmount / 2 : 1 + ColAmount / 2)] = new(HexTileType.WalkableNarrowCurve, 240);
+            SpawnedHexTiles[(RowAmount + 1, (RowAmount & 1) == 0 ? ColAmount / 2 : 1 + ColAmount / 2)] = new(HexTileType.Start, 240);
         }
 
 
@@ -149,7 +149,7 @@ namespace RotatingRoutes.Hex
 
             //return;
             //DOWN SIDE
-            for (int j = -hillColAmount; j < 0; j++)
+            for (int j = -hillColAmount * 2; j < 0; j++)
                 for (int i = 0; i < RowAmount; i++)
                     SpawnedHexTiles.Add((j, i), new(j == -1 ? HexTileType.HillTransition : HexTileType.Finale, 0));
 

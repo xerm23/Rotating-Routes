@@ -15,7 +15,8 @@ namespace RotatingRoutes.Hex
         Transition,
         Water,
         HillTransition,
-        Finale
+        Finale,
+        Start
     }
 
     public class HexTile : MonoBehaviour
@@ -87,12 +88,6 @@ namespace RotatingRoutes.Hex
         {
             playerMover.RightStartPosition = GetComponentsInChildren<ConnectPoint>().OrderBy(go => (playerMover.transform.position - go.transform.position).sqrMagnitude).First().transform.position;
             SetUsableStatus(false);
-        }
-
-        public void SetAsStartTile()
-        {
-            SetUsableStatus(false);
-            GetComponentsInChildren<ConnectPoint>().ToList().ForEach( go => Destroy(go));   
         }
     }
 }

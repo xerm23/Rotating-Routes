@@ -8,6 +8,12 @@ public enum GameState
     GameCompleted,
     GameOver
 }
+public enum StartSide
+{
+    Left,
+    Right
+}
+
 
 namespace RotatingRoutes.Managers
 {
@@ -18,6 +24,7 @@ namespace RotatingRoutes.Managers
         public static int ProgressionAmount = PlayerPrefs.GetInt("CurrentLevel", 0);
 
         public static Action<GameState> OnGameStateChange;
+        public static Action<StartSide> OnGameStarted;
 
         public static GameState CurrentState = GameState.Pregame;
 
@@ -27,11 +34,12 @@ namespace RotatingRoutes.Managers
             OnGameStateChange?.Invoke(CurrentState);
 
         }
-        public static void GameStarted()
+        public static void GameStarted(StartSide startSide)
         {
             Debug.Log("Game Started!");
             CurrentState = GameState.GameStarted;
             OnGameStateChange?.Invoke(CurrentState);
+            OnGameStarted?.Invoke(startSide);
         }
 
         public static void GameOver()

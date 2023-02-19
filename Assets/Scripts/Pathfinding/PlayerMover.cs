@@ -8,6 +8,9 @@ namespace RotatingRoutes.Pathfinding
 {
     public class PlayerMover : MonoBehaviour
     {
+        public Vector3 LeftStartPosition;
+        public Vector3 RightStartPosition;
+
         [SerializeField] private float _moveSpeed = 5f;
         [SerializeField] private LayerMask _hexLayer;
 
@@ -17,6 +20,19 @@ namespace RotatingRoutes.Pathfinding
         [SerializeField] private List<ConnectPoint> _currentConnectPoints = new();
 
         private RaycastHit[] _raycastHitsForConnectCheck = new RaycastHit[5];
+
+        private void Awake()
+        {
+            GameManager.OnGameStarted += StartMoving;
+        }
+
+        private void StartMoving(StartSide startSide)
+        {
+            if (startSide == StartSide.Left)
+                SetLeftAsStart();
+
+            else SetRightAsStart();
+        }
 
         private void Update()
         {
@@ -106,9 +122,6 @@ namespace RotatingRoutes.Pathfinding
         {
             _wayPoints.Add(startWaypoint);
         }
-
-        public Vector3 LeftStartPosition;
-        public Vector3 RightStartPosition;
 
         [ContextMenu("SetLeftStart")]
         public void SetLeftAsStart() => SetStartWaypoint(LeftStartPosition);
