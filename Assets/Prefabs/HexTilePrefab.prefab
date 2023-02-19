@@ -48,11 +48,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hexTileGroups:
   - {fileID: 11400000, guid: 6d336f3c28b0d8b4f8dfc3e3dace8963, type: 2}
-  - {fileID: 11400000, guid: d07d91f8c810f7343a7fdb140dede99e, type: 2}
-  - {fileID: 11400000, guid: 4398d0f9805a81b4fa9ad6c5f285dec7, type: 2}
+  - {fileID: 11400000, guid: e23e1d4e5f6b44e4ab8ee627f5e8f21f, type: 2}
+  - {fileID: 11400000, guid: 7c23a0d9c8c43514794efc9795c056fe, type: 2}
+  - {fileID: 11400000, guid: a86e004f535a24d419073fd10780a01d, type: 2}
   - {fileID: 11400000, guid: 4685d5cce569bc040ac360c1471f79d3, type: 2}
   - {fileID: 11400000, guid: ca96b5b4ea13ef64fb5936c0ce1ff521, type: 2}
   - {fileID: 11400000, guid: 5d1296223542962439d5e16e0506b7f7, type: 2}
+  - {fileID: 11400000, guid: aa71a8525f273724fa4ccbebcc03201f, type: 2}
   _meshFilter: {fileID: 4816967648103923756}
   _meshRenderer: {fileID: 274706442682691909}
   <UsableStatus>k__BackingField: 1
@@ -60,6 +62,7 @@ MonoBehaviour:
     Type: 0
     RotationAngle: 0
     ModelId: 0
+    ScaleY: 0
 --- !u!64 &4784917338089846518
 MeshCollider:
   m_ObjectHideFlags: 0

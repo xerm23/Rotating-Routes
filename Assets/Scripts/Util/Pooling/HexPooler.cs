@@ -53,12 +53,37 @@ namespace RotatingRoutes.Util.ObjectPooling
                 if (!_spawnedTiles.ContainsKey((i, j)) && !outsideCamFrame)
                 {
                     var hexGameObject = GetGameObjectByRotationId(_hexGridGenerator.SpawnedHexTiles[(i, j)].RotationAngle, _hexGridGenerator.SpawnedHexTiles[(i, j)].ModelId);
+
                     _hexGridGenerator.SpawnedHexTiles[(i, j)] = hexGameObject.HexTileStatus;
+                    hexGameObject.gameObject.name = $"Tile: ({i},{j})";
                     hexGameObject.transform.SetPositionAndRotation(new(xCoord, 0, zCoord), Quaternion.Euler(0, _hexGridGenerator.SpawnedHexTiles[(i, j)].RotationAngle, 0));
                     hexGameObject.SetupTile();
                     _spawnedTiles[(i, j)] = hexGameObject;
+                    SetStartPositionTiles(i, j, hexGameObject);
                 }
             }
+        }
+
+        private void SetStartPositionTiles(int i, int j, HexTile hexGameObject)
+        {
+            bool startTileR = _hexGridGenerator.RowAmount + 1 == i;
+            bool startTileCol = (_hexGridGenerator.RowAmount & 1) == 0 ? _hexGridGenerator.ColAmount / 2 == j : 1 + _hexGridGenerator.ColAmount / 2 == j;
+
+
+            if (startTileR && startTileCol)
+            {
+                Debug.Log($"{startTileR} {startTileCol} {i} {j}");
+                hexGameObject.SetAsStartTile();
+            }
+
+            if (_hexGridGenerator.RowAmount != i)
+                return;
+
+            if (_hexGridGenerator.ColAmount / 2 == j)
+                hexGameObject.SetTileAsLeftStarting(_hexGridGenerator.Player);
+
+            if (1 + _hexGridGenerator.ColAmount / 2 == j)
+                hexGameObject.SetTileAsRightStarting(_hexGridGenerator.Player);
         }
 
         public HexTile GetGameObjectByRotationId(float rotationAngle, int modelId)

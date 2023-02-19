@@ -1,9 +1,8 @@
-using RotatingRoutes.CameraControl;
+using RotatingRoutes.Pathfinding;
 using RotatingRoutes.Util.Extensions;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking.Types;
-using static UnityEditor.Progress;
+using static UnityEditor.PlayerSettings;
 
 namespace RotatingRoutes.Hex
 {
@@ -14,7 +13,9 @@ namespace RotatingRoutes.Hex
         WalkableWideCurve,
         Blocker,
         Transition,
-        Hill
+        Water,
+        HillTransition,
+        Finale
     }
 
     public class HexTile : MonoBehaviour
@@ -23,7 +24,7 @@ namespace RotatingRoutes.Hex
         [SerializeField] MeshFilter _meshFilter;
         [SerializeField] MeshRenderer _meshRenderer;
 
-        [field: SerializeField] public bool UsableStatus { get; private set; } = true;
+        [field: SerializeField] public bool UsableStatus { get; private set; }
         [field: SerializeField] public HexTileStatus HexTileStatus { get; private set; }
 
         private GameObject _instantiatedPrefab;
@@ -37,11 +38,13 @@ namespace RotatingRoutes.Hex
         }
         public void SetupTile()
         {
+            UsableStatus = true;
             gameObject.SetActive(true);
             var tileGroup = _hexTileGroups.First(x => x.TileType == HexTileStatus.Type);
             var model = tileGroup.Models[HexTileStatus.ModelId];
             _meshFilter.mesh = model.GetComponent<MeshFilter>().sharedMesh;
             _meshRenderer.materials = model.GetComponent<MeshRenderer>().sharedMaterials;
+            _meshFilter.transform.localScale = model.transform.localScale;
 
             if (tileGroup.BasePrefab != null && _instantiatedPrefab == null)
                 _instantiatedPrefab = Instantiate(tileGroup.BasePrefab, transform);
@@ -73,5 +76,23 @@ namespace RotatingRoutes.Hex
             }
         }
         public void SetUsableStatus(bool status) => UsableStatus = status;
+
+        public void SetTileAsLeftStarting(PlayerMover playerMover)
+        {
+            playerMover.LeftStartPosition = GetComponentsInChildren<ConnectPoint>().OrderBy(go => (playerMover.transform.position - go.transform.position).sqrMagnitude).First().transform.position;
+            SetUsableStatus(false);
+        }
+
+        public void SetTileAsRightStarting(PlayerMover playerMover)
+        {
+            playerMover.RightStartPosition = GetComponentsInChildren<ConnectPoint>().OrderBy(go => (playerMover.transform.position - go.transform.position).sqrMagnitude).First().transform.position;
+            SetUsableStatus(false);
+        }
+
+        public void SetAsStartTile()
+        {
+            SetUsableStatus(false);
+            GetComponentsInChildren<ConnectPoint>().ToList().ForEach( go => Destroy(go));   
+        }
     }
 }
