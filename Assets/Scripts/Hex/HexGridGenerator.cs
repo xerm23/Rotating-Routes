@@ -1,13 +1,31 @@
-﻿using Codice.Client.Common.GameUI;
-using DG.Tweening;
+﻿using RotatingRoutes.Util.ObjectPooling;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using UnityEngine;
-using static DG.DemiEditor.DeEditorUtils;
 
 namespace RotatingRoutes.Hex
 {
+    [System.Serializable]
+    public struct HexTileStatus
+    {
+        public HexTileType Type;
+        public float RotationAngle;
+        public int ModelId;
+        public int ScaleY;
+
+        public HexTileStatus(HexTileType type, float rotationAngle, int modelId = -1, int scaleY = 1)
+        {
+            Type = type;
+            RotationAngle = rotationAngle;
+            ModelId = modelId;
+            ScaleY = scaleY;
+        }
+
+        public override string ToString()
+        {
+            return $"Status: {Type} angle: {RotationAngle} model: {ModelId} scale  {ScaleY}";
+        }
+    }
 
     public class HexGridGenerator : MonoBehaviour
     {
@@ -18,15 +36,16 @@ namespace RotatingRoutes.Hex
         [SerializeField] GameObject[] hillTransition;
         [SerializeField] GameObject[] hillTiles;
 
-        private const float X_OFFSET = 2f;
-        private const float Z_OFFSET = 1.75f;
+        public const float X_OFFSET = 2f;
+        public const float Z_OFFSET = 1.75f;
 
-        private Dictionary<(int row, int column), HexTile> _spawnedHexTiles = new();
+        public Dictionary<(int row, int column), HexTileStatus> SpawnedHexTiles { get; private set; } = new();
 
-        void Start()
+        private Camera _mainCam;
+
+        private void Awake()
         {
-            HexTile.Pool.SetOriginal(hexTilePrefab);
-            HexTile.Pool.SetParent(transform);
+            _mainCam = Camera.main;
             Generate();
         }
         [SerializeField] float blockerChance = 5;
@@ -38,18 +57,12 @@ namespace RotatingRoutes.Hex
         int totalBlockers, totalWalkableStraight, totalNarrowCurve;
 
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space)) { Generate(); }
-
-        }
-
         [ContextMenu("Generate!")]
         private void Generate()
         {
-            foreach (Transform child in transform)
-                Destroy(child.gameObject);
-            _spawnedHexTiles.Clear();
+            //foreach (Transform child in transform)
+            //    Destroy(child.gameObject);
+            SpawnedHexTiles.Clear();
             totalBlockers = 0;
             totalWalkableStraight = 0;
             totalNarrowCurve = 0;
@@ -58,8 +71,8 @@ namespace RotatingRoutes.Hex
             for (int i = 0; i < rowAmount; i++)
                 for (int j = 0; j < colAmount; j++)
                 {
-                    HexTile tile = HexTile.Pool.Get();
-                    _spawnedHexTiles.Add((i, j), tile);
+                    HexTileType tileType;
+                    //HexTile tile = HexTile.Pool.Get();
                     bool blockerCondition = Random.Range(0, 100) < blockerChance
                                             && !TileTypeInRange(i, j, HexTileType.Blocker, blockerMinimumRange)
                                             && i >= 1
@@ -69,42 +82,44 @@ namespace RotatingRoutes.Hex
                     if (blockerCondition)
                     {
                         totalBlockers++;
-                        tile.SetHexTileType(HexTileType.Blocker);
+                        tileType = HexTileType.Blocker;
+                        //tile.SetHexTileType(HexTileType.Blocker);
                     }
-                    else SpawnTileAsWalkable(i, j, tile);
-                    tile.gameObject.name = $"Tile {i}-{j}";
-                    tile.transform.SetPositionAndRotation(new Vector3(i % 2 != 0 ? X_OFFSET * j + X_OFFSET / 2 : X_OFFSET * j, 0, Z_OFFSET * i), Quaternion.Euler(0, Random.Range(0, 6) * 60, 0));
+                    else tileType = SpawnTileAsWalkable(i, j);
+                    float tileRotation = Random.Range(0, 6) * 60;
+
+                    SpawnedHexTiles.Add((i, j), new(tileType, tileRotation));
                 }
 
 
-            Debug.Log($"Total blocker {totalBlockers}, Total walkable straight {totalWalkableStraight}, Total narrow {totalNarrowCurve} Total tiles {_spawnedHexTiles.Count}");
+            Debug.Log($"Total blocker {totalBlockers}, Total walkable straight {totalWalkableStraight}, Total narrow {totalNarrowCurve} Total tiles {SpawnedHexTiles.Count}");
             //SpawnSideHills();
         }
 
-        private void SpawnTileAsWalkable(int row, int col, HexTile tile)
+        private HexTileType SpawnTileAsWalkable(int row, int col)
         {
-            if (Random.Range(0, 100) < straightWalkableChance)// && !TileTypeInRange(row, col, HexTileType.WalkableStraight, 1))
+            if (Random.Range(0, 100) < straightWalkableChance && !TileTypeInRange(row, col, HexTileType.WalkableStraight, 1))
             {
-                tile.SetHexTileType(HexTileType.WalkableStraight);
                 totalWalkableStraight++;
+                return HexTileType.WalkableStraight;
             }
             else if (Random.Range(0, 100) < narrowCurveChance)
             {
                 totalNarrowCurve++;
-                tile.SetHexTileType(HexTileType.WalkableNarrowCurve);
+                return HexTileType.WalkableNarrowCurve;
             }
-            else tile.SetHexTileType(HexTileType.WalkableWideCurve);
+            return HexTileType.WalkableWideCurve;
         }
 
 
         private bool TileTypeInRange(int row, int col, HexTileType hexType, int range)
         {
             var tiles = TilesInRange((row, col), range);
-            return tiles.Any(x => x.HexTileType == hexType);
+            return tiles.Any(x => x == hexType);
         }
-        private List<HexTile> TilesInRange((int x, int y) center, int range)
+        private List<HexTileType> TilesInRange((int x, int y) center, int range)
         {
-            List<HexTile> resultsTiles = new();
+            List<HexTileType> resultsTiles = new();
 
             for (int q = -range; q <= range; q++)
             {
@@ -116,9 +131,10 @@ namespace RotatingRoutes.Hex
                     var (row, col) = Offset((center.x & 1) == 0, q, r);
                     var tileCoord = (center.x + row, center.y + col);
 
-                    _spawnedHexTiles.TryGetValue(tileCoord, out var tile);
-                    if (tile != null)
-                        resultsTiles.Add(tile);
+                    if (SpawnedHexTiles.ContainsKey(tileCoord))
+                    {
+                        resultsTiles.Add(SpawnedHexTiles[tileCoord].Type);
+                    }
                 }
             }
 

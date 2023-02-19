@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 
 namespace RotatingRoutes.Hex
@@ -8,11 +7,17 @@ namespace RotatingRoutes.Hex
     public class HexTileSOGroups : ScriptableObject
     {
         public HexTileType TileType;
-        public GameObject[] Prefabs;
+        public GameObject BasePrefab;
+        public GameObject[] Models;
 
-        public void GenerateRandomPrefab(Transform parent)
+        public GameObject GetModel(int modelId)
         {
-            Instantiate(Prefabs[Random.Range(0, Prefabs.Length)], parent);
+            return Models[modelId];
+        }
+
+        public GameObject GeneratePrefab(Transform parent)
+        {
+            return Instantiate(BasePrefab, parent); ;
         }
     }
 }

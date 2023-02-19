@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: WalkableStraightTiles
   m_EditorClassIdentifier: 
   TileType: 0
-  Prefabs:
-  - {fileID: 1437256641406552853, guid: 737c757a36f011247abc5f2c68b0efa6, type: 3}
+  BasePrefab: {fileID: 1437256641406552853, guid: 737c757a36f011247abc5f2c68b0efa6, type: 3}
+  Models:
+  - {fileID: 919132149155446097, guid: 78ece35e1cffedb4fa5386e01dc17620, type: 3}
