@@ -1,3 +1,4 @@
+using RotatingRoutes.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,16 +37,15 @@ namespace RotatingRoutes.Pathfinding
                 if (++_currentWaypointId >= _wayPoints.Count) //check movement for another tile
                     CheckNextTileConnection();
             }
-
         }
 
-        [ContextMenu("Check Next Tile")]
+        [ContextMenu("GO NEXT")]
         private void CheckNextTileConnection()
         {
-            Debug.Log("Checking NEXT TILE!!");
             _wayPoints.Clear();
             Array.Clear(_raycastHitsForConnectCheck, 0, _raycastHitsForConnectCheck.Length);
             Physics.SphereCastNonAlloc(transform.position, .15f, transform.forward, _raycastHitsForConnectCheck, .2f, _hexLayer);
+            CheckFinishLine();
             SetNewWaypoints(ConnectPointsFromRaycast());
         }
 
@@ -60,8 +60,25 @@ namespace RotatingRoutes.Pathfinding
             return connectPoints;
         }
 
+        private bool _levelCompleted;
+
+        private void CheckFinishLine()
+        {
+            foreach (var raycastHit in _raycastHitsForConnectCheck)
+            {
+                if (raycastHit.transform != null && raycastHit.transform.TryGetComponent<FinishLine>(out var finishline))
+                {
+                    _levelCompleted = true;
+                    finishline.InvokeGameFinished(transform);
+                }
+            }
+        }
+
         private bool SetNewWaypoints(List<ConnectPoint> points)
         {
+            if (_levelCompleted)
+                return false;
+
             foreach (var connectPoint in points)
             {
                 if (_currentConnectPoints.Contains(connectPoint))
@@ -80,8 +97,23 @@ namespace RotatingRoutes.Pathfinding
 
                 return true; // Reached to a next walkable tile in correct pos
             }
-            Debug.Log("GAME OVER!!");
+            GameManager.GameOver();
             return false;
         }
+
+
+        public void SetStartWaypoint(Vector3 startWaypoint)
+        {
+            _wayPoints.Add(startWaypoint);
+        }
+
+        public Vector3 LeftStartPosition;
+        public Vector3 RightStartPosition;
+
+        [ContextMenu("SetLeftStart")]
+        public void SetLeftAsStart() => SetStartWaypoint(LeftStartPosition);
+
+        [ContextMenu("SetRightStart")]
+        public void SetRightAsStart() => SetStartWaypoint(RightStartPosition);
     }
 }

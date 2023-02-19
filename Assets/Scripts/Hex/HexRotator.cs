@@ -23,8 +23,6 @@ namespace RotatingRoutes.Hex
                .SetDelay(.1f)
                .OnComplete(() => _rotatingTweens.Remove(hex));
 
-
-            //_rotatingTweens.Add(hex, hex.rotation.eulerAngles.y + 60);
         }
 
     }
