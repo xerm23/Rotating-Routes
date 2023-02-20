@@ -1,6 +1,4 @@
-using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
+using RotatingRoutes.Managers;
 using UnityEngine;
 
 namespace RotatingRoutes.Hex
@@ -18,7 +16,8 @@ namespace RotatingRoutes.Hex
         }
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && (GameManager.CurrentState == GameState.GameStarted
+                                                || GameManager.CurrentState == GameState.Pregame))
             {
                 GetHit();
             }

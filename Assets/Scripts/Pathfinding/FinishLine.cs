@@ -33,8 +33,8 @@ namespace RotatingRoutes.Pathfinding
         void MovePlayerToFinish()
         {
             var castle = Instantiate(CastlePrefab, transform.parent);
-            castle.transform.localPosition = new Vector3(0, -1, 7);
-            castle.transform.DOMoveY(1, .2f);
+            castle.transform.localPosition = new Vector3(0, -1, HexGridGenerator.Z_OFFSET * 4);
+            castle.transform.DOMoveY(1, .2f);   
             castle.transform.DOPunchScale(Vector3.one * .2f, .1f).SetDelay(.1f).OnComplete(() => castle.transform.DOScale(1, .1f));
 
             _playerTransform.DOMove(transform.GetChild(0).position, 1.5f).SetEase(Ease.OutCubic).OnComplete(() => GameManager.GameFinished());

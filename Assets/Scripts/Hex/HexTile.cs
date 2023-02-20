@@ -15,7 +15,8 @@ namespace RotatingRoutes.Hex
         Transition,
         Water,
         HillTransition,
-        Finale
+        Finale,
+        Start
     }
 
     public class HexTile : MonoBehaviour
@@ -28,6 +29,8 @@ namespace RotatingRoutes.Hex
         [field: SerializeField] public HexTileStatus HexTileStatus { get; private set; }
 
         private GameObject _instantiatedPrefab;
+
+        private bool _generatedWaypoints;
 
         public void SetHexStatus(HexTileStatus hexStatus) => HexTileStatus = hexStatus;
 
@@ -53,7 +56,6 @@ namespace RotatingRoutes.Hex
             SetWalkablePath();
         }
 
-        public float ZBasedOnGridPos(int i, int j) => HexGridGenerator.Z_OFFSET * i;
 
         private void SetWalkablePath()
         {
@@ -66,6 +68,9 @@ namespace RotatingRoutes.Hex
         }
         private void GenerateWaypointsReference(LineRenderer linePath, Transform container)
         {
+            if (_generatedWaypoints)
+                return;
+            _generatedWaypoints = true;
             container.DestroyChildren();
             for (int i = 0; i < linePath.positionCount; i++)
             {
@@ -87,12 +92,6 @@ namespace RotatingRoutes.Hex
         {
             playerMover.RightStartPosition = GetComponentsInChildren<ConnectPoint>().OrderBy(go => (playerMover.transform.position - go.transform.position).sqrMagnitude).First().transform.position;
             SetUsableStatus(false);
-        }
-
-        public void SetAsStartTile()
-        {
-            SetUsableStatus(false);
-            GetComponentsInChildren<ConnectPoint>().ToList().ForEach( go => Destroy(go));   
         }
     }
 }

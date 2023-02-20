@@ -55,6 +55,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ca96b5b4ea13ef64fb5936c0ce1ff521, type: 2}
   - {fileID: 11400000, guid: 5d1296223542962439d5e16e0506b7f7, type: 2}
   - {fileID: 11400000, guid: aa71a8525f273724fa4ccbebcc03201f, type: 2}
+  - {fileID: 11400000, guid: f423e3d53f20ff441b4b97f78e024438, type: 2}
   _meshFilter: {fileID: 4816967648103923756}
   _meshRenderer: {fileID: 274706442682691909}
   <UsableStatus>k__BackingField: 1

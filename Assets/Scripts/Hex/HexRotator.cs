@@ -1,4 +1,5 @@
 using DG.Tweening;
+using RotatingRoutes.Managers;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace RotatingRoutes.Hex
             HexTile hexTile = hex.GetComponent<HexTile>();
             if (hexTile == null || !hexTile.UsableStatus)
                 return;
+            AudioManager.Instance.PlayPopSound();
             hex.DOKill();
             hex.DOPunchScale(Vector3.one * .2f, .1f).OnComplete(() => hex.DOScale(1, .1f));
             hex.DOMoveY(1, .1f).OnComplete(() => hex.DOMoveY(0, .1f).SetDelay(.1f));

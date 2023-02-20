@@ -66,16 +66,6 @@ namespace RotatingRoutes.Util.ObjectPooling
 
         private void SetStartPositionTiles(int i, int j, HexTile hexGameObject)
         {
-            bool startTileR = _hexGridGenerator.RowAmount + 1 == i;
-            bool startTileCol = (_hexGridGenerator.RowAmount & 1) == 0 ? _hexGridGenerator.ColAmount / 2 == j : 1 + _hexGridGenerator.ColAmount / 2 == j;
-
-
-            if (startTileR && startTileCol)
-            {
-                Debug.Log($"{startTileR} {startTileCol} {i} {j}");
-                hexGameObject.SetAsStartTile();
-            }
-
             if (_hexGridGenerator.RowAmount != i)
                 return;
 
