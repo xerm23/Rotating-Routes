@@ -48,7 +48,7 @@ namespace RotatingRoutes.Hex
                     bool blockerCondition = Random.Range(0, 100) < blockerChance
                                             && !TileTypeInRange(i, j, HexTileType.Blocker, blockerMinimumRange)
                                             && i >= 1
-                                            && i <= RowAmount - 1
+                                            && i <= RowAmount - 2
                                             && j >= 1
                                             && j <= ColAmount - 1;
                     if (blockerCondition)

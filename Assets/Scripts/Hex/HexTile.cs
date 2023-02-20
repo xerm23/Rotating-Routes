@@ -30,6 +30,8 @@ namespace RotatingRoutes.Hex
 
         private GameObject _instantiatedPrefab;
 
+        private bool _generatedWaypoints;
+
         public void SetHexStatus(HexTileStatus hexStatus) => HexTileStatus = hexStatus;
 
         private bool _walkPathSetup = false;
@@ -54,7 +56,6 @@ namespace RotatingRoutes.Hex
             SetWalkablePath();
         }
 
-        public float ZBasedOnGridPos(int i, int j) => HexGridGenerator.Z_OFFSET * i;
 
         private void SetWalkablePath()
         {
@@ -67,6 +68,10 @@ namespace RotatingRoutes.Hex
         }
         private void GenerateWaypointsReference(LineRenderer linePath, Transform container)
         {
+            if (_generatedWaypoints)
+                return;
+            _generatedWaypoints = true;
+            Debug.Log("GENERATE WAYPOINTS");
             container.DestroyChildren();
             for (int i = 0; i < linePath.positionCount; i++)
             {

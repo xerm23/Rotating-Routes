@@ -1,8 +1,6 @@
 using DG.Tweening;
 using RotatingRoutes.Managers;
-using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace RotatingRoutes.UI
@@ -22,7 +20,7 @@ namespace RotatingRoutes.UI
 
         private void ResetScene()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            LoadingScreenController.Instance.ResetGame();
         }
 
         private void OnDestroy()

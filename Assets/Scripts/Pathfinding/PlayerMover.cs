@@ -1,3 +1,4 @@
+using Codice.CM.Common;
 using RotatingRoutes.Managers;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,14 @@ namespace RotatingRoutes.Pathfinding
         [SerializeField] private LayerMask _hexLayer;
 
 
-        [SerializeField] private List<Vector3> _wayPoints = new(10);
+        private List<Vector3> _wayPoints = new(10);
         private int _currentWaypointId = 0;
-        [SerializeField] private List<ConnectPoint> _currentConnectPoints = new();
+        private List<ConnectPoint> _currentConnectPoints = new();
 
-        private RaycastHit[] _raycastHitsForConnectCheck = new RaycastHit[5];
+        private readonly RaycastHit[] _raycastHitsForConnectCheck = new RaycastHit[5];
 
+        private bool _levelCompleted;
+        private readonly float _directionLerpSpeed = 5f;
         private void Awake()
         {
             GameManager.OnGameStarted += StartMoving;
@@ -47,6 +50,12 @@ namespace RotatingRoutes.Pathfinding
             float waypointThreshold = .1f;
 
             transform.position = Vector3.MoveTowards(transform.position, _wayPoints[_currentWaypointId], step);
+
+            Vector3 relativePos = (_wayPoints[_currentWaypointId] - transform.position).normalized;
+            transform.forward = Vector3.Lerp(transform.forward, relativePos, _directionLerpSpeed* Time.deltaTime);
+
+            //Quaternion toRotation = Quaternion.LookRotation(relativePos);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, _directionLerpSpeed * Time.time);
 
             if (Vector3.Distance(transform.position, _wayPoints[_currentWaypointId]) < waypointThreshold) // reached waypoint
             {
@@ -75,8 +84,6 @@ namespace RotatingRoutes.Pathfinding
             }
             return connectPoints;
         }
-
-        private bool _levelCompleted;
 
         private void CheckFinishLine()
         {
