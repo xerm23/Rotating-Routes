@@ -29,6 +29,7 @@ namespace RotatingRoutes.UI
 
         private void Start()
         {
+            Application.targetFrameRate = 240;
             foreach (Transform child in transform)
             {
                 Image childImageComp = child.GetComponent<Image>();

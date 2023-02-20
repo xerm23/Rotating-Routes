@@ -2,7 +2,6 @@ using RotatingRoutes.Pathfinding;
 using RotatingRoutes.Util.Extensions;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 namespace RotatingRoutes.Hex
 {
