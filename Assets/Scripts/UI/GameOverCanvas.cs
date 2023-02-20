@@ -9,6 +9,7 @@ namespace RotatingRoutes.UI
     {
         [SerializeField] Button _replayButton;
         CanvasGroup _canvasGroup;
+        private bool _clicked;
 
         // Start is called before the first frame update
         void Start()
@@ -20,7 +21,12 @@ namespace RotatingRoutes.UI
 
         private void ResetScene()
         {
-            LoadingScreenController.Instance.ResetGame();
+            if (_clicked)
+                return;
+            _clicked = true;
+
+            _replayButton.transform.DORotate(new Vector3(0, 0, -180), .25f)
+                .OnComplete(() => LoadingScreenController.Instance.ResetGame());
         }
 
         private void OnDestroy()

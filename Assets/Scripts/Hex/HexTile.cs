@@ -71,7 +71,6 @@ namespace RotatingRoutes.Hex
             if (_generatedWaypoints)
                 return;
             _generatedWaypoints = true;
-            Debug.Log("GENERATE WAYPOINTS");
             container.DestroyChildren();
             for (int i = 0; i < linePath.positionCount; i++)
             {

@@ -31,9 +31,13 @@ namespace RotatingRoutes.UI
         {
             foreach (Transform child in transform)
             {
-                _images.Add(child.GetComponent<Image>());
+                Image childImageComp = child.GetComponent<Image>();
+                _images.Add(childImageComp);
+                childImageComp.DOColor(Color.white, .1f);
             }
             _canvasGroup = GetComponent<CanvasGroup>();
+            ShuffleImages();
+            _canvasGroup.DOFade(0, .5f).SetDelay(2f);
         }
 
         public void ResetGame()
@@ -53,7 +57,6 @@ namespace RotatingRoutes.UI
                 Sprite nextSprite = sprites[spriteIndex];
                 _images[i].sprite = nextSprite;
                 sprites.RemoveAt(spriteIndex);
-
                 RectTransform imageRect = _images[i].rectTransform;
                 float delay = .25f + Random.Range(.2f, .35f);
                 imageRect.DOComplete();

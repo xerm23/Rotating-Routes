@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,10 +8,19 @@ namespace RotatingRoutes.Managers
     public class AudioManager : MonoBehaviour
     {
         public static AudioManager Instance;
+        [SerializeField] private AudioSource _musicSource;
 
         [SerializeField] private AudioClip popSound;
         [SerializeField] private AudioClip crackSound;
         AudioSource _audioSource;
+        public static bool SoundTurnedOn => Convert.ToBoolean(PlayerPrefs.GetInt("SoundOn", 1));
+        public void SetSoundStatus(bool status)
+        {
+            int volume = Convert.ToInt16(status);
+            PlayerPrefs.SetInt("SoundOn", volume);
+            _musicSource.volume = volume;
+        }
+
 
         private void Awake()
         {
@@ -38,6 +48,7 @@ namespace RotatingRoutes.Managers
 
         private void Start()
         {
+            _musicSource.volume = Convert.ToInt16(SoundTurnedOn);
             _audioSource = GetComponent<AudioSource>();
         }
 
@@ -49,7 +60,9 @@ namespace RotatingRoutes.Managers
 
         private void PlayClip(AudioClip clip)
         {
-            _audioSource.pitch = Random.Range(0.8f, 1.2f);
+            if (!SoundTurnedOn)
+                return;
+            _audioSource.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
             _audioSource.PlayOneShot(clip);
         }
 
